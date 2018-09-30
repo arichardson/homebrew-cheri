@@ -52,6 +52,11 @@ class Samba < Formula
     copy_file "./bin/default/lib/tevent/libtevent.dylib", "#{lib}/libtevent.dylib"
   end
 
+  def post_install
+    # Add a symlink so that the QEMU formula finds this smdb by default
+    (HOMEBREW_PREFIX/"sbin").install_symlink (sbin/"smbd").realpath => "samba-dot-org-smbd"
+  end
+
   test do
     system "#{sbin}/smbd", "--version"
     system "#{sbin}/smbd", "--help"
