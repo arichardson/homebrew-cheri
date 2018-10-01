@@ -3,13 +3,14 @@
 class Samba < Formula
   desc "SMB/CIFS file, print, and login server for UNIX (keg-only)"
   homepage "https://samba.org/"
-  url "https://download.samba.org/pub/samba/samba-4.8.5.tar.gz"
-  sha256 "e58ee6b1262d4128b8932ceee59d5f0b0a9bbe00547eb3cc4c41552de1a65155"
+  url "https://download.samba.org/pub/samba/samba-4.9.1.tar.gz"
+  sha256 "33118cbe83a87be085eba1aae6e597878b02d6ac9b2da67454ed33cf3e9853f2"
 
   keg_only :provided_by_macos
   depends_on "pkg-config" => :build
   depends_on "gnutls"
   depends_on "krb5"
+  depends_on "libarchive"
   depends_on "openssl"
   depends_on "readline" # Without the readline dependency the build fails on macOS 10.14+
 
@@ -29,10 +30,12 @@ class Samba < Formula
            "--without-ad-dc",
            "--without-ads",
            "--without-dnsupdate",
+           "--without-json-audit",
            "--without-ldap",
            # will be needed in 4.9.0: "--without-json-audit",
            "--without-ntvfs-fileserver",
            "--without-pam",
+           "--without-quotas",
            "--without-regedit",
            "--without-syslog",
            "--without-utmp",
@@ -50,11 +53,12 @@ class Samba < Formula
     copy_file "./bin/default/lib/talloc/libtalloc.dylib", "#{lib}/libtalloc.dylib"
     copy_file "./bin/default/lib/tdb/libtdb.dylib", "#{lib}/libtdb.dylib"
     copy_file "./bin/default/lib/tevent/libtevent.dylib", "#{lib}/libtevent.dylib"
+    sbin.install_symlink "smbd" => "samba-dot-org-smbd"
   end
 
   def post_install
     # Add a symlink so that the QEMU formula finds this smdb by default
-    (HOMEBREW_PREFIX/"sbin").install_symlink (sbin/"smbd").realpath => "samba-dot-org-smbd"
+    (HOMEBREW_PREFIX/"sbin").install_symlink (sbin/"samba-dot-org-smbd").realpath
   end
 
   test do
