@@ -1,10 +1,11 @@
 # See rejected pull request https://github.com/Homebrew/homebrew-core/pull/32031
 
 class Samba < Formula
-  desc "SMB/CIFS file, print, and login server for UNIX (keg-only)"
+  desc "SMB/CIFS file server for UNIX (this build is only useful for QEMU user-network shares)"
   homepage "https://samba.org/"
   url "https://download.samba.org/pub/samba/samba-4.9.1.tar.gz"
   sha256 "33118cbe83a87be085eba1aae6e597878b02d6ac9b2da67454ed33cf3e9853f2"
+  revision 1
 
   keg_only :provided_by_macos
   depends_on "pkg-config" => :build
@@ -61,8 +62,53 @@ class Samba < Formula
     (HOMEBREW_PREFIX/"sbin").install_symlink (sbin/"samba-dot-org-smbd").realpath
   end
 
+  # Fixes the Grouplimit of 16 users os OS X.
+  # https://bugzilla.samba.org/show_bug.cgi?id=8773
+  # https://github.com/samba-team/samba/pull/210
+  patch :DATA
+
   test do
     system "#{sbin}/smbd", "--version"
     system "#{sbin}/smbd", "--help"
   end
 end
+__END__
+commit 9d47ed6850545cd9315ef01f288b39c54e882cfb
+Author: Alex Richardson <Alexander.Richardson@cl.cam.ac.uk>
+Date:   Fri Oct 5 09:35:40 2018 +0100
+
+    Don't use sysconf(_SC_NGROUPS_MAX) MacOS
+
+    On MacOS sysconf(_SC_NGROUPS_MAX) always returns 16. However, this is not
+    the value used by getgroups(2). MacOS uses nested groups but getgroups(2)
+    will return the flattened list which can easily exceed 16 groups. In my
+    testing getgroups() already returns 16 groups on a freshly installed
+    system. And on a 10.14 system the root user is in more than 16 groups by
+    default which makes it impossible to run smbd without this change.
+
+    See https://bugzilla.samba.org/show_bug.cgi?id=8773
+
+diff --git a/source3/lib/system.c b/source3/lib/system.c
+index 507d4a9af93..4c6808a7637 100644
+--- a/source3/lib/system.c
++++ b/source3/lib/system.c
+@@ -776,7 +776,18 @@ void sys_srandom(unsigned int seed)
+
+ int groups_max(void)
+ {
+-#if defined(SYSCONF_SC_NGROUPS_MAX)
++#if defined(DARWINOS)
++	/*
++	 * On MacOS sysconf(_SC_NGROUPS_MAX) returns 16
++	 * due to MacOS's group nesting. However, getgroups()
++	 * will return a flat list and return -1 if that flat list
++	 * exceeds the limit of 16 (which seems to be the case for
++	 * the root user on any 10.14 system). Since the sysconf()
++	 * constant is not related to what getgroups() uses we
++	 * return a fixed constant here.
++	 */
++	return 128;
++#elif defined(SYSCONF_SC_NGROUPS_MAX)
+ 	int ret = sysconf(_SC_NGROUPS_MAX);
+ 	return (ret == -1) ? NGROUPS_MAX : ret;
+ #else
