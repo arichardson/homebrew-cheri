@@ -3,8 +3,8 @@
 class Samba < Formula
   desc "SMB/CIFS file server for UNIX (this build is only useful for QEMU user-network shares)"
   homepage "https://samba.org/"
-  url "https://download.samba.org/pub/samba/samba-4.9.1.tar.gz"
-  sha256 "33118cbe83a87be085eba1aae6e597878b02d6ac9b2da67454ed33cf3e9853f2"
+  url "https://download.samba.org/pub/samba/samba-4.9.4.tar.gz"
+  sha256 "6d98a8d8bcccbe788e4bbb406362e6676311aca711a3f3cc9b3a404bb9ff0b4f"
   revision 1
 
   keg_only :provided_by_macos
