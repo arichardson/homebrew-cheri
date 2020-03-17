@@ -3,19 +3,36 @@
 class Samba < Formula
   desc "SMB/CIFS file server for UNIX (this build is only useful for QEMU user-network shares)"
   homepage "https://samba.org/"
-  url "https://download.samba.org/pub/samba/samba-4.9.13.tar.gz"
-  sha256 "ab18331e37766b13dbb07d1f115bda3d794917baf502d0ca2b2b8fff014b88f2"
-  revision 1
+  url "https://download.samba.org/pub/samba/samba-4.12.0.tar.gz"
+  sha256 "6ec0b70a567d3c3f4dd3cf2a90b515dcef03a3804b00abb5896eba382d9665fe"
 
   keg_only :provided_by_macos
   depends_on "pkg-config" => :build
+  depends_on "python" => :build
+  depends_on "jansson"
   depends_on "gnutls"
   depends_on "krb5"
   depends_on "libarchive"
   depends_on "openssl"
   depends_on "readline" # Without the readline dependency the build fails on macOS 10.14+
 
+  resource "Parse::Yapp" do
+    url "https://cpan.metacpan.org/authors/id/W/WB/WBRASWELL/Parse-Yapp-1.21.tar.gz"
+    sha256 "3810e998308fba2e0f4f26043035032b027ce51ce5c8a52a8b8e340ca65f13e5"
+  end
+
   def install
+    # Add perl dependencies
+    ENV.prepend_create_path "PERL5LIB", libexec/"lib/perl5"
+    resources.each do |r|
+      r.stage do
+        system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+        system "make"
+        system "make", "install"
+      end
+    end
+    ENV.prepend_path "PATH", libexec/"bin"
+
     # Samba can be used to share directories with the guest in QEMU user-mode (SLIRP) networking
     # with the `-net user,id=net0,smb=/share/this/with/guest` option.
     # Without this formula QEMU will attempt use the system smbd and silently fail to setup
@@ -31,9 +48,7 @@ class Samba < Formula
            "--without-ad-dc",
            "--without-ads",
            "--without-dnsupdate",
-           "--without-json-audit",
            "--without-ldap",
-           # will be needed in 4.9.0: "--without-json-audit",
            "--without-ntvfs-fileserver",
            "--without-pam",
            "--without-quotas",
