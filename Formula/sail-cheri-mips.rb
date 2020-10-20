@@ -6,8 +6,6 @@ class SailCheriMips < Formula
   head "https://github.com/CTSRD-CHERI/sail-cheri-mips.git"
 
   depends_on "gmp" => :build
-  depends_on "lem" => :build
-  depends_on "linksem" => :build
   depends_on "menhir" => :build
   depends_on "opam" => :build
   depends_on "sail" => :build
