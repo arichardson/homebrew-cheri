@@ -1,7 +1,7 @@
 # See rejected pull request https://github.com/Homebrew/homebrew-core/pull/32031
 
 class Samba < Formula
-  desc "SMB/CIFS file server for UNIX (this build is only useful for QEMU user-network shares)"
+  desc "SMB/CIFS file server for UNIX (this is only useful for QEMU user-network shares)"
   homepage "https://samba.org/"
   url "https://download.samba.org/pub/samba/stable/samba-4.12.8.tar.gz"
   sha256 "6b2078c0d451e442b0e3c194f7b14db684fe374651cc2057ce882f0614925f2d"
@@ -9,8 +9,8 @@ class Samba < Formula
   keg_only :provided_by_macos
   depends_on "pkg-config" => :build
   depends_on "python" => :build
-  depends_on "jansson"
   depends_on "gnutls"
+  depends_on "jansson"
   depends_on "krb5"
   depends_on "libarchive"
   depends_on "openssl"
@@ -20,6 +20,11 @@ class Samba < Formula
     url "https://cpan.metacpan.org/authors/id/W/WB/WBRASWELL/Parse-Yapp-1.21.tar.gz"
     sha256 "3810e998308fba2e0f4f26043035032b027ce51ce5c8a52a8b8e340ca65f13e5"
   end
+
+  # Fixes the Grouplimit of 16 users os OS X.
+  # https://bugzilla.samba.org/show_bug.cgi?id=8773
+  # https://github.com/samba-team/samba/pull/210
+  patch :DATA
 
   def install
     # Add perl dependencies
@@ -72,11 +77,6 @@ class Samba < Formula
     # Add a symlink so that the QEMU formula finds this smdb by default
     (HOMEBREW_PREFIX/"sbin").install_symlink (sbin/"samba-dot-org-smbd").realpath
   end
-
-  # Fixes the Grouplimit of 16 users os OS X.
-  # https://bugzilla.samba.org/show_bug.cgi?id=8773
-  # https://github.com/samba-team/samba/pull/210
-  patch :DATA
 
   test do
     system "#{sbin}/smbd", "--version"

@@ -3,14 +3,14 @@ class Sail < Formula
   homepage "https://www.cl.cam.ac.uk/~pes20/sail/"
   url "https://github.com/rems-project/sail/archive/0.11.tar.gz"
   sha256 "e9ebd32c903ab1abb7c67551d93445ebf4c756109e9a7c5845d76beaa82df58f"
-  head "https://github.com/rems-project/sail.git", :branch => "sail2"
+  head "https://github.com/rems-project/sail.git", branch: "sail2"
 
   depends_on "gmp" => :build
   depends_on "menhir" => :build
   depends_on "opam" => :build
   depends_on "ott" => :build
-  depends_on "z3" => :build
   depends_on "pkg-config" => :build
+  depends_on "z3" => :build
   depends_on "ocaml"
 
   def install

@@ -6,11 +6,11 @@ class SailCheriMips < Formula
   head "https://github.com/CTSRD-CHERI/sail-cheri-mips.git"
 
   depends_on "gmp" => :build
-  # depends_on "menhir" => :build
-  depends_on "opam" => :build
-  depends_on "sail" => :build
   depends_on "lem" => :build
   depends_on "linksem" => :build
+  depends_on "menhir" => :build
+  depends_on "opam" => :build
+  depends_on "sail" => :build
   depends_on "z3" => :build
   depends_on "ocaml"
 
@@ -23,8 +23,8 @@ class SailCheriMips < Formula
       system "opam", "init", "--no-setup", "--disable-sandboxing"
       # These binaries are provided by homebrew so install them with --fake
       # Note: --fake also fakes the dependencies so we first install them with --deps-only
-#      system "opam", "install", "--deps-only", "ott", "menhir"
-#      system "opam", "install", "--fake", "ott", "menhir"
+      #      system "opam", "install", "--deps-only", "ott", "menhir"
+      #      system "opam", "install", "--fake", "ott", "menhir"
       system "opam", "list", "-i"
       # system "opam", "install", "zarith"
       # system "opam", "list", "-i"
