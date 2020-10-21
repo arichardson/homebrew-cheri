@@ -5,6 +5,11 @@ class Sail < Formula
   sha256 "73e593b2c9f08e2ef8f1c59c7c4541fde10393dae0f38e1176efe7c508c5839d"
   head "https://github.com/rems-project/sail.git", branch: "sail2"
 
+  bottle do
+    root_url "https://dl.bintray.com/arichardson/bottles-cheri"
+    sha256 "fae53aca4cc05d59bf45c139732ac44f930ddba1870f909bc00cc3741124c9b3" => :catalina
+  end
+
   depends_on "gmp" => :build
   depends_on "opam" => :build
   depends_on "pkg-config" => :build
