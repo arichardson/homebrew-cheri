@@ -1,14 +1,12 @@
 class Sail < Formula
   desc "Language for describing the instruction semantics of processors"
   homepage "https://www.cl.cam.ac.uk/~pes20/sail/"
-  url "https://github.com/rems-project/sail/archive/0.11.tar.gz"
-  sha256 "e9ebd32c903ab1abb7c67551d93445ebf4c756109e9a7c5845d76beaa82df58f"
+  url "https://github.com/rems-project/sail/archive/0.13.tar.gz"
+  sha256 "73e593b2c9f08e2ef8f1c59c7c4541fde10393dae0f38e1176efe7c508c5839d"
   head "https://github.com/rems-project/sail.git", branch: "sail2"
 
   depends_on "gmp" => :build
-  depends_on "menhir" => :build
   depends_on "opam" => :build
-  depends_on "ott" => :build
   depends_on "pkg-config" => :build
   depends_on "z3" => :build
   depends_on "ocaml"
@@ -17,6 +15,8 @@ class Sail < Formula
     Dir.mktmpdir("opamroot") do |opamroot|
       ENV["OPAMROOT"] = opamroot
       ENV["OPAMYES"] = "1"
+      ENV["OPAMJOBS"] = ENV.make_jobs.to_s
+      ENV["ADD_REVISION"] = "1" if build.head?
       system "opam", "init", "--no-setup", "--disable-sandboxing"
       # These binaries are provided by homebrew so install them with --fake
       # Note: --fake also fakes the dependencies so we first install them with --deps-only
@@ -28,7 +28,9 @@ class Sail < Formula
       # just use opam to install from the source dir
       # use opam to install sail (pin first to build it from the sources instead of the repo)
       system "opam", "install", ".", "--deps-only", prefix.to_s
-      system "opam", "install", ".", "--inplace-build", "--destdir", prefix.to_s
+      # system "opam", "install", ".", "--inplace-build", "--destdir", prefix.to_s
+      system "opam", "config", "exec", "make", "isail", "INSTALL_DIR=#{prefix}", "SHARE_DIR=#{share}"
+      system "opam", "config", "exec", "make", "install", "INSTALL_DIR=#{prefix}", "SHARE_DIR=#{share}"
     end
   end
 
