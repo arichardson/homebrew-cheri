@@ -6,6 +6,11 @@ class Samba < Formula
   url "https://download.samba.org/pub/samba/stable/samba-4.12.8.tar.gz"
   sha256 "6b2078c0d451e442b0e3c194f7b14db684fe374651cc2057ce882f0614925f2d"
 
+  bottle do
+    root_url "https://dl.bintray.com/arichardson/bottles-cheri"
+    sha256 "6918822ace53b2020f0f132d97eaa3c7bf43a46f6dde2b077516b978cf29c890" => :catalina
+  end
+
   keg_only :provided_by_macos
   depends_on "pkg-config" => :build
   depends_on "python" => :build
@@ -13,7 +18,7 @@ class Samba < Formula
   depends_on "jansson"
   depends_on "krb5"
   depends_on "libarchive"
-  depends_on "openssl"
+  depends_on "openssl@1.1"
   depends_on "readline" # Without the readline dependency the build fails on macOS 10.14+
 
   resource "Parse::Yapp" do
