@@ -8,7 +8,7 @@ class Samba < Formula
 
   bottle do
     root_url "https://dl.bintray.com/arichardson/bottles-cheri"
-    sha256 "6918822ace53b2020f0f132d97eaa3c7bf43a46f6dde2b077516b978cf29c890" => :catalina
+    sha256 catalina: "6918822ace53b2020f0f132d97eaa3c7bf43a46f6dde2b077516b978cf29c890"
   end
 
   keg_only :provided_by_macos
