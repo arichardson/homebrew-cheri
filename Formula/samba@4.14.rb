@@ -14,6 +14,12 @@ class SambaAT414 < Formula
     regex(/href=.*?samba[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
+  bottle do
+    root_url "https://github.com/arichardson/homebrew-cheri/releases/download/samba@4.14-4.14.12_1"
+    sha256 big_sur:      "8df7fdea317a1790bff801bb11452f7cab16d3ce2e993c4ee59994adf0b51233"
+    sha256 x86_64_linux: "60eed73eee4d7042e0c2e3f90b2f918b7a4febf983b3248598f6a92726575147"
+  end
+
   # configure requires python3 binary to be present, even when --disable-python is set.
   depends_on "python@3.10" => :build
   depends_on "gnutls"
