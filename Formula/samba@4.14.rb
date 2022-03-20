@@ -7,7 +7,7 @@ class SambaAT414 < Formula
   url "https://download.samba.org/pub/samba/stable/samba-4.14.12.tar.gz"
   sha256 "155d9c2dfb06a18104422987590858bfe5e9783ebebe63882e7e7f07eaaa512d"
   license "GPL-3.0-or-later"
-  revision 1
+  revision 2
 
   livecheck do
     url "https://www.samba.org/samba/download/"
@@ -19,6 +19,8 @@ class SambaAT414 < Formula
     sha256 big_sur:      "8df7fdea317a1790bff801bb11452f7cab16d3ce2e993c4ee59994adf0b51233"
     sha256 x86_64_linux: "60eed73eee4d7042e0c2e3f90b2f918b7a4febf983b3248598f6a92726575147"
   end
+
+  keg_only :versioned_formula
 
   # configure requires python3 binary to be present, even when --disable-python is set.
   depends_on "python@3.10" => :build
@@ -33,11 +35,10 @@ class SambaAT414 < Formula
     sha256 "3810e998308fba2e0f4f26043035032b027ce51ce5c8a52a8b8e340ca65f13e5"
   end
 
-  # Workaround for "charset_macosxfs.c:278:4: error: implicit declaration of function 'DEBUG' is invalid in C99"
-  # Can be removed when https://bugzilla.samba.org/show_bug.cgi?id=14680 gets resolved.
+  # charset_macosxfs.c: fix compilation on macOS
   patch do
-    url "https://attachments.samba.org/attachment.cgi?id=16579"
-    sha256 "86fce5306349d1c8f3732ca978a31065df643c8770114dc9d068b7b4dfa7d282"
+    url "https://github.com/samba-team/samba/commit/2564e96e8319b4cb4c987dd2a03cf8a293db985a.patch?full_index=1"
+    sha256 "2428106941f61dba0060e258612d2eda07a96f4e233b239dd2e125361ec18985"
   end
 
   # Don't use sysconf(_SC_NGROUPS_MAX) on macOS for getgroups()
